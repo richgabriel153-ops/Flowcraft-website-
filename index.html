@@ -119,7 +119,8 @@ button,.btn,summary{-webkit-user-select:none;user-select:none}
 .steps i{display:block;height:4px;width:44px;border-radius:2px;background:rgba(27,24,20,.18);overflow:hidden;position:relative}
 .steps i::after{content:"";position:absolute;inset:0;background:var(--ink);transform:scaleX(var(--f,0));transform-origin:left}
 
-.stage{position:relative;height:100%;min-height:560px;perspective:1600px;perspective-origin:50% 35%;z-index:2}
+.stage{position:relative;height:100%;min-height:560px;perspective:1600px;perspective-origin:50% 35%;z-index:1;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
+.copy{-webkit-transform:translateZ(0);transform:translateZ(0)}
 .scene{position:absolute;left:50%;top:50%;--sc:.84;width:0;height:0;transform-style:preserve-3d;
   transform:translateY(var(--lift,0px)) scale(var(--sc,1)) rotateX(var(--rx,4deg)) rotateY(var(--ry,-22deg))}
 /* plinth */
@@ -383,12 +384,13 @@ footer{padding:56px 0 30px}
 }
 @media (max-width:860px){
   .hero{height:220vh}
-  .hero-pin{grid-template-columns:1fr;grid-template-rows:auto 1fr;align-items:start;padding-top:92px}
+  .hero-pin{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);align-items:start;padding-top:92px;padding-bottom:12px}
+  .stage{overflow:hidden;min-height:0;border-radius:24px}
   .copy .sub{font-size:17px;margin-top:16px}
   .copy .ctas{margin-top:22px}
   .now{margin-top:18px}
   .stage{min-height:0}
-  .scene{--sc:.62;top:56%}
+  .scene{top:54%}
   .scroll-hint{display:none}
   .sec-head{grid-template-columns:1fr}
   .sec-head .lede{justify-self:start}
@@ -399,7 +401,11 @@ footer{padding:56px 0 30px}
 }
 @media (max-width:520px){
   :root{--s-display:clamp(44px, 12.4vw, 60px)}
-  .scene{--sc:.46;top:54%}
+  .scene{top:54%}
+  .copy .long{display:none}
+  .steps{display:none}
+  .now{margin-top:14px}
+  .copy h1{font-size:clamp(40px,11vw,52px)}
   .copy .sub{font-size:16px}
   .copy .ctas .btn{min-height:48px;font-size:15px;padding:0 16px}
   .hero-pin{padding-top:84px}
@@ -519,7 +525,7 @@ footer{padding:56px 0 30px}
     <div class="beam" aria-hidden="true"></div>
     <div class="copy">
       <h1>Automations that work <em>while you sleep</em></h1>
-      <p class="sub">I build AI agents and n8n automations for small businesses in the US and Europe. Finding leads, confirming bookings, chasing invoices, answering customers and reporting, all running in your own accounts.</p>
+      <p class="sub">I build AI agents and n8n automations for small businesses in the US and Europe.<span class="long"> Finding leads, confirming bookings, chasing invoices, answering customers and reporting, all running in your own accounts.</span></p>
       <div class="ctas">
         <a class="btn" href="https://calendly.com/flowcraftautomations369/30min" rel="noopener">Book a call <span class="arr" aria-hidden="true">→</span></a>
         <a class="btn ghost" href="#services">See what I build</a>
@@ -838,6 +844,8 @@ const $=id=>document.getElementById(id);
   stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;drag={x:e.clientX,y:e.clientY}});
   stage.addEventListener('pointermove',e=>{if(!drag)return;target.px=Math.max(-1.6,Math.min(1.6,(e.clientX-drag.x)/90));target.py=Math.max(-1,Math.min(1,(e.clientY-drag.y)/180));kick()});
   addEventListener('pointerup',()=>{if(drag){drag=null;target.px=0;target.py=0;kick()}});
+  function fit(){if(innerWidth<=860){const s=Math.min(.62,Math.max(.26,stage.clientHeight/900));scene.style.setProperty('--sc',s.toFixed(3))}else scene.style.removeProperty('--sc')}
+  fit();addEventListener('resize',fit);
   cur.p=target.p=progress();apply();kick();
 })();
 
