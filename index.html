@@ -121,7 +121,7 @@ button,.btn,summary{-webkit-user-select:none;user-select:none}
 
 .stage{position:relative;height:100%;min-height:560px;perspective:1600px;perspective-origin:50% 35%;z-index:1;isolation:isolate;-webkit-transform:translateZ(0);transform:translateZ(0)}
 .copy{-webkit-transform:translateZ(0);transform:translateZ(0)}
-.scene{position:absolute;left:50%;top:50%;--sc:.84;width:0;height:0;transform-style:preserve-3d;
+.scene{position:absolute;left:50%;top:50%;--sc:.9;width:0;height:0;transform-style:preserve-3d;
   transform:translateY(var(--lift,0px)) scale(var(--sc,1)) rotateX(var(--rx,4deg)) rotateY(var(--ry,-22deg))}
 /* plinth */
 .plinth{position:absolute;transform-style:preserve-3d;transform:translate3d(-230px,250px,-150px)}
@@ -136,7 +136,10 @@ button,.btn,summary{-webkit-user-select:none;user-select:none}
   background:radial-gradient(50% 50% at 50% 50%, rgba(40,30,20,.45), transparent 70%);filter:blur(10px)}
 
 /* phone */
-.phone{position:absolute;width:300px;height:620px;left:-150px;top:-370px;transform-style:preserve-3d}
+.phone{position:absolute;width:300px;height:620px;left:-150px;top:-370px;transform-style:preserve-3d;will-change:transform}
+.stage{cursor:grab;touch-action:pan-y}
+.stage.grabbing{cursor:grabbing}
+.stage.grabbing *{-webkit-user-select:none;user-select:none}
 .phone .back{position:absolute;inset:0;border-radius:48px;background:#2a2420;transform:translateZ(-14px)}
 .phone .edge{position:absolute;inset:0;border-radius:48px;transform:translateZ(-7px);
   background:linear-gradient(160deg,#c4895a,#2ce0c2 70%);box-shadow:0 0 40px rgba(44,224,194,.32), 0 0 80px rgba(196,137,90,.3)}
@@ -145,7 +148,7 @@ button,.btn,summary{-webkit-user-select:none;user-select:none}
 .screen{position:relative;width:100%;height:100%;border-radius:38px;overflow:hidden;
   background:radial-gradient(120% 60% at 70% 0%, #2c2621 0%, #15120f 60%);color:var(--cream);font-size:12px;line-height:1.4;padding:44px 16px 14px}
 .screen::before{content:"";position:absolute;top:12px;left:50%;width:92px;height:26px;margin-left:-46px;border-radius:14px;background:#000}
-.screen::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg, transparent 40%, rgba(255,240,220,.10) 50%, transparent 60%);pointer-events:none}
+.screen::after{content:"";position:absolute;inset:0;background:radial-gradient(45% 30% at var(--gx,70%) var(--gy,15%), rgba(255,240,220,.16), transparent 70%),linear-gradient(115deg, transparent 40%, rgba(255,240,220,.08) 50%, transparent 60%);pointer-events:none;mix-blend-mode:screen}
 .sb{position:absolute;top:16px;left:26px;right:24px;display:flex;justify-content:space-between;font-weight:700;font-size:12px}
 .app-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .app-h b{font-size:17px;font-weight:800;letter-spacing:-0.02em}
@@ -177,10 +180,10 @@ button,.btn,summary{-webkit-user-select:none;user-select:none}
 .tabs span:first-child{color:var(--cream);font-weight:700}
 
 /* floating glass panels */
-.panel{position:absolute;transform-style:preserve-3d;color:var(--cream);
+.panel{position:absolute;transform-style:preserve-3d;color:var(--cream);cursor:pointer;
   transform:translate3d(var(--x),var(--y),calc(var(--z) * var(--pop,0))) scale(calc(.86 + .14 * var(--pop,0)));
   opacity:var(--pop,0);transition:opacity 500ms ease}
-.panel .g{border-radius:16px;padding:14px 16px;background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1);
+.panel .g{border-radius:16px;padding:14px 16px;background:linear-gradient(160deg, rgba(58,50,43,.93), rgba(28,24,21,.9));
   box-shadow:inset 0 0 0 1px var(--glass-line), 0 30px 60px -20px rgba(40,28,15,.45)}
 .panel .k{font-size:11px;font-weight:700;color:var(--teal)}
 .panel .t{font-family:var(--serif);font-size:26px;line-height:1.02;margin-top:4px}
@@ -484,6 +487,24 @@ footer{padding:56px 0 30px}
 @media (max-width:860px){.lh-intro{grid-template-columns:1fr}.lh-intro .lede{justify-self:start}}
 @media (max-width:520px){.svc-item{grid-template-columns:40px 1fr;padding:16px}.svc-item .go{display:none}.brand .wm small{display:none}}
 @media (prefers-reduced-motion: reduce){.chain li{animation:none;opacity:1;transform:none}}
+
+/* bolder 3D */
+.phone .edge{animation:rim 4s ease-in-out infinite}
+@keyframes rim{0%,100%{box-shadow:0 0 36px rgba(44,224,194,.38),0 0 90px rgba(196,137,90,.28)}50%{box-shadow:0 0 56px rgba(44,224,194,.6),0 0 130px rgba(196,137,90,.4)}}
+.plinth .glow{position:absolute;width:340px;height:240px;left:60px;top:30px;transform:rotateX(90deg) translateZ(2px);transform-origin:top left;
+  background:radial-gradient(50% 50% at 50% 50%, rgba(44,224,194,.45), rgba(196,137,90,.18) 45%, transparent 72%);filter:blur(14px);opacity:calc(.55 + var(--bob,.5) * .35)}
+.plinth .shadow{opacity:calc(1 - var(--bob,.5) * .35)}
+.panel{transform:translate3d(var(--x),calc(var(--y) + var(--fl,0px)),calc(var(--z) * var(--pop,0))) scale(calc(.86 + .14 * var(--pop,0)))}
+.panel .g{transition:transform 380ms var(--ease-out), box-shadow 380ms ease, background-color 300ms ease;transform-origin:center}
+.panel .t{font-size:28px}
+.panel.on .g{box-shadow:inset 0 0 0 1.5px rgba(44,224,194,.75), 0 0 0 6px rgba(44,224,194,.12), 0 34px 70px -18px rgba(20,60,50,.6)}
+@media (hover:hover) and (pointer:fine){
+  .panel:hover .g{transform:translateZ(46px) scale(1.05);box-shadow:inset 0 0 0 1.5px rgba(44,224,194,.9), 0 40px 80px -20px rgba(20,40,35,.65)}
+}
+.panel:active .g{transform:translateZ(30px) scale(.98)}
+.now span#now{transition:opacity 160ms ease}
+.lead{transition:background-color 200ms ease}
+@media (prefers-reduced-motion: reduce){.phone .edge{animation:none}}
 </style>
 </head>
 <body>
@@ -538,7 +559,7 @@ footer{padding:56px 0 30px}
 
     <div class="stage" id="stage" role="img" aria-label="A phone on a stone plinth showing a Flowcraft dashboard of running automations, with panels floating out of the screen: a new lead, a WhatsApp booking confirmation, an invoice reminder and a weekly report">
       <div class="scene" id="scene">
-        <div class="plinth" aria-hidden="true"><div class="f top"></div><div class="shadow"></div><div class="f front"></div><div class="f side"></div></div>
+        <div class="plinth" aria-hidden="true"><div class="f top"></div><div class="shadow"></div><div class="glow"></div><div class="f front"></div><div class="f side"></div></div>
         <div class="phone" aria-hidden="true">
           <div class="back"></div><div class="edge"></div>
           <div class="body"><div class="screen">
@@ -790,64 +811,105 @@ const $=id=>document.getElementById(id);
   setTimeout(()=>els.forEach(e=>e.classList.add('in')),5000);
 })();
 
-/* ===== hero 3D scene: scroll story + pointer tilt with springs ===== */
+/* ===== hero 3D scene: scroll story, pointer tilt, drag-to-spin, idle float ===== */
 (function(){
-  const hero=$('hero'),scene=$('scene'),stage=$('stage');
+  const hero=$('hero'),scene=$('scene'),stage=$('stage'),phone=document.querySelector('.phone'),screen=document.querySelector('.screen');
   const panels=[...document.querySelectorAll('.panel')];
   const bars=[...document.querySelectorAll('.steps i')];
   const now=$('now'),featT=$('feat-t'),featM=$('feat-m'),featBar=$('feat-bar');
   const labels=['Finding new leads for you','Confirming a booking on WhatsApp','Chasing an unpaid invoice','Sending your weekly report'];
   const feats=[['Lead Hunter','Finding businesses in Austin'],['Booking confirmations','Sending Anna her check-in details'],['Invoice reminders','Invoice #1042 · reminder 2 of 3'],['Weekly report','Summing up your week for Telegram']];
-  let target={p:0,px:0,py:0},cur={p:0,px:0,py:0},vel={p:0,px:0,py:0},lastStep=-1,running=false,last=0;
-  function progress(){
-    const r=hero.getBoundingClientRect(),total=hero.offsetHeight-innerHeight;
-    return Math.min(1,Math.max(0,-r.top/Math.max(1,total)));
+  const fine=matchMedia('(hover:hover) and (pointer:fine)').matches;
+  // springs: value, velocity
+  const S={p:[0,0],px:[0,0],py:[0,0],spin:[0,0]};
+  const T={p:0,px:0,py:0,spin:0};
+  let lastStep=-1,pinned=-1,pinTimer=0,running=false,last=0,clock=0,visible=true;
+  let drag=null,spinVel=0,lastDragT=0;
+  function progress(){const r=hero.getBoundingClientRect(),total=hero.offsetHeight-innerHeight;return Math.min(1,Math.max(0,-r.top/Math.max(1,total)))}
+  function setStep(step){
+    if(step===lastStep)return;lastStep=step;
+    now.style.opacity=0;setTimeout(()=>{now.textContent=labels[step];now.style.opacity=1},140);
+    featT.textContent=feats[step][0];featM.textContent=feats[step][1];featBar.style.setProperty('--p',[30,55,80,100][step]+'%');
+    $('k-tasks').textContent=[128,131,135,142][step];$('k-hrs').textContent=[9,9,9,10][step];
+    panels.forEach((el,i)=>el.classList.toggle('on',i===step));
   }
   function apply(){
-    const p=cur.p;
-    const ry=-24+p*36+cur.px*14, rx=6-cur.py*8+p*-2;
-    scene.style.setProperty('--ry',ry+'deg');
-    scene.style.setProperty('--rx',rx+'deg');
-    scene.style.setProperty('--lift',(-p*30)+'px');
-    // panels pop in sequence; first is visible from the start
+    const p=S.p[0];
+    const bobY=reduce?0:Math.sin(clock*1.1)*9, bobR=reduce?0:Math.sin(clock*.7)*1.2;
+    const ry=-26+p*40+S.px[0]*16+S.spin[0], rx=7-S.py[0]*9-p*2;
+    scene.style.setProperty('--ry',ry.toFixed(2)+'deg');
+    scene.style.setProperty('--rx',rx.toFixed(2)+'deg');
+    scene.style.setProperty('--lift',(-p*30).toFixed(1)+'px');
+    phone.style.transform='translate3d(0,'+(bobY-14).toFixed(2)+'px,0) rotateZ('+bobR.toFixed(2)+'deg)';
+    scene.style.setProperty('--bob',((bobY+9)/18).toFixed(3));
     panels.forEach((el,i)=>{
       const a=i===0?-.2:i*0.22, v=Math.min(1,Math.max(0,(p-a)/0.12));
-      el.style.setProperty('--pop',v.toFixed(3));
+      const f=pinned>=0?(i===pinned?1:Math.max(.0,v)):v;
+      el.style.setProperty('--pop',f.toFixed(3));
+      el.style.setProperty('--fl',(reduce?0:Math.sin(clock*1.3+i*1.7)*6).toFixed(2)+'px');
     });
-    const step=Math.min(3,Math.floor(p/0.22+0.0001));
-    bars.forEach((b,i)=>b.style.setProperty('--f',i<step?1:i===step?Math.min(1,(p-step*0.22)/0.22):0));
-    if(step!==lastStep){lastStep=step;now.textContent=labels[step];featT.textContent=feats[step][0];featM.textContent=feats[step][1];featBar.style.setProperty('--p',[30,55,80,100][step]+'%');
-      $('k-tasks').textContent=[128,131,135,142][step];$('k-hrs').textContent=[9,9,9,10][step];}
+    const step=pinned>=0?pinned:Math.min(3,Math.floor(p/0.22+0.0001));
+    bars.forEach((b,i)=>b.style.setProperty('--f',i<step?1:i===step?(pinned>=0?1:Math.min(1,(p-step*0.22)/0.22)):0));
+    setStep(step);
   }
   function tick(ts){
     if(!running)return;
-    const dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;
-    target.p=progress();
-    let moving=false;
-    for(const k of ['p','px','py']){
-      const kk=k==='p'?90:60,d=k==='p'?18:12;
-      vel[k]+=(target[k]-cur[k])*kk*dt;vel[k]*=Math.exp(-d*dt);cur[k]+=vel[k]*dt;
-      if(Math.abs(target[k]-cur[k])>.0005||Math.abs(vel[k])>.0005)moving=true;
+    const dt=Math.min(.05,(ts-(last||ts))/1000);last=ts;clock+=dt;
+    T.p=progress();
+    if(!drag){
+      if(Math.abs(spinVel)>.5){T.spin=Math.max(-52,Math.min(52,T.spin+spinVel*dt));spinVel*=Math.exp(-3.2*dt)}
+      else if(performance.now()-lastDragT>2200){T.spin*=Math.exp(-1.6*dt)}
+    }
+    for(const k in S){
+      const st=k==='p'?110:k==='spin'?70:55, dm=k==='p'?20:k==='spin'?14:11;
+      S[k][1]+=(T[k]-S[k][0])*st*dt;S[k][1]*=Math.exp(-dm*dt);S[k][0]+=S[k][1]*dt;
     }
     apply();
-    if(moving)requestAnimationFrame(tick);else{running=false}
+    requestAnimationFrame(tick);
   }
-  function kick(){if(reduce){cur.p=target.p=progress();apply();return}if(!running){running=true;last=0;requestAnimationFrame(tick)}}
-  addEventListener('scroll',kick,{passive:true});
-  addEventListener('resize',kick);
-  if(matchMedia('(hover:hover) and (pointer:fine)').matches){
-    hero.addEventListener('pointermove',e=>{target.px=(e.clientX/innerWidth-.5)*2;target.py=(e.clientY/innerHeight-.5)*2;kick()});
-    hero.addEventListener('pointerleave',()=>{target.px=0;target.py=0;kick()});
+  function start(){if(running)return;running=true;last=0;requestAnimationFrame(tick)}
+  function stop(){running=false}
+  if(reduce){S.p[0]=T.p=progress();apply();addEventListener('scroll',()=>{S.p[0]=progress();apply()},{passive:true})}
+  else{
+    new IntersectionObserver(es=>es.forEach(e=>{visible=e.isIntersecting;visible&&!document.hidden?start():stop()})).observe(hero);
+    document.addEventListener('visibilitychange',()=>document.hidden?stop():visible&&start());
   }
-  // touch: drag the phone to turn it
-  let drag=null;
-  stage.addEventListener('pointerdown',e=>{if(e.pointerType!=='touch')return;drag={x:e.clientX,y:e.clientY}});
-  stage.addEventListener('pointermove',e=>{if(!drag)return;target.px=Math.max(-1.6,Math.min(1.6,(e.clientX-drag.x)/90));target.py=Math.max(-1,Math.min(1,(e.clientY-drag.y)/180));kick()});
-  addEventListener('pointerup',()=>{if(drag){drag=null;target.px=0;target.py=0;kick()}});
-  function fit(){if(innerWidth<=860){const s=Math.min(.62,Math.max(.26,stage.clientHeight/900));scene.style.setProperty('--sc',s.toFixed(3))}else scene.style.removeProperty('--sc')}
-  fit();addEventListener('resize',fit);
-  cur.p=target.p=progress();apply();kick();
+  // pointer tilt + screen sheen
+  hero.addEventListener('pointermove',e=>{
+    if(!fine||drag)return;
+    T.px=(e.clientX/innerWidth-.5)*2;T.py=(e.clientY/innerHeight-.5)*2;
+    const r=screen.getBoundingClientRect();
+    screen.style.setProperty('--gx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+    screen.style.setProperty('--gy',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+  });
+  hero.addEventListener('pointerleave',()=>{T.px=0;T.py=0});
+  // drag to spin (mouse and touch), with momentum
+  stage.addEventListener('pointerdown',e=>{
+    if(e.target.closest('.panel'))return;
+    drag={x:e.clientX,y:e.clientY,s:T.spin,t:performance.now(),lx:e.clientX,moved:false};
+    stage.classList.add('grabbing');
+  });
+  addEventListener('pointermove',e=>{
+    if(!drag)return;
+    const dx=e.clientX-drag.x;
+    if(!drag.moved&&Math.abs(dx)<6)return;
+    drag.moved=true;
+    const now_=performance.now(),dt=Math.max(1,now_-drag.t);
+    spinVel=(e.clientX-drag.lx)/dt*1000*.35;drag.t=now_;drag.lx=e.clientX;
+    const raw=drag.s+dx*.35,lim=48;T.spin=Math.abs(raw)<=lim?raw:Math.sign(raw)*(lim+(Math.abs(raw)-lim)*.18);
+    if(e.pointerType==='touch')T.py=Math.max(-1,Math.min(1,(e.clientY-drag.y)/220));
+  },{passive:true});
+  addEventListener('pointerup',()=>{if(!drag)return;drag=null;lastDragT=performance.now();T.py=0;stage.classList.remove('grabbing')});
+  // tap a floating panel: show that automation on the phone
+  panels.forEach((el,i)=>el.addEventListener('click',e=>{
+    if(e.target.closest('a'))return;
+    pinned=i;clearTimeout(pinTimer);pinTimer=setTimeout(()=>{pinned=-1},4500);
+    if(reduce)apply();
+  }));
+  S.p[0]=T.p=progress();apply();
 })();
+function fitScene(){const scene=$('scene'),stage=$('stage');if(innerWidth<=860){const s=Math.min(.62,Math.max(.26,stage.clientHeight/900));scene.style.setProperty('--sc',s.toFixed(3))}else scene.style.removeProperty('--sc')}
+fitScene();addEventListener('resize',fitScene);
 
 /* footer + clock */
 (function(){const el=$('clock');const t=()=>{try{el.textContent=new Intl.DateTimeFormat('en-GB',{hour:'2-digit',minute:'2-digit',timeZone:'Africa/Lagos'}).format(new Date())}catch(e){el.textContent='UTC+1'}};t();setInterval(t,20000)})();
